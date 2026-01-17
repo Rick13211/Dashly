@@ -3,13 +3,34 @@ import { useRouter } from 'next/navigation';
 import React, { FormEvent, useState } from 'react';
 
 export default function SignUp() {
-  const [username, SetUsername]=  useState('')
-  const [email, SetEmail]=  useState('')
-  const [password, SetPassword]=  useState('')
-  const [confirmPassword, SetConfirmPassword]=  useState('')
-  function handleSubmit(e:FormEvent<HTMLFormElement>){
-    e.preventDefault()
-    
+  const [username, SetUsername] = useState('')
+  const [email, SetEmail] = useState('')
+  const [password, SetPassword] = useState('')
+  const [confirmPassword, SetConfirmPassword] = useState('')
+  async function handleSubmit(e: FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    const response = await fetch("/api/auth/signup", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        username,
+        email,
+        password,
+        confirm_password: confirmPassword
+      })
+    })
+    if (!response.ok) {
+      const errorData = await response.json();
+      console.log(errorData.message)
+      throw new Error(errorData.error || "Failed to register")
+    }
+    const data = await response.json()
+    console.log(data)
+    router.push('/dashboard')
+
+
   }
   const router = useRouter();
   return (
@@ -31,8 +52,9 @@ export default function SignUp() {
               Username
             </label>
             <input
-              onChange={(e)=>SetUsername(e.target.value)} 
-              type="text" 
+              onChange={(e) => SetUsername(e.target.value)}
+              type="text"
+              name='username'
               placeholder="johndoe"
               className="w-full bg-zinc-800/50 border border-zinc-700 text-white px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-white/20 focus:border-zinc-500 transition-all placeholder-zinc-600"
             />
@@ -42,9 +64,10 @@ export default function SignUp() {
             <label className="block text-xs font-semibold text-zinc-400 uppercase tracking-widest mb-2 ml-1">
               Email
             </label>
-            <input 
-              onChange={(e)=>SetEmail(e.target.value)}
-              type="email" 
+            <input
+              onChange={(e) => SetEmail(e.target.value)}
+              type="email"
+              name='email'
               placeholder="johndoe@email.com"
               className="w-full bg-zinc-800/50 border border-zinc-700 text-white px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-white/20 focus:border-zinc-500 transition-all placeholder-zinc-600"
             />
@@ -54,9 +77,10 @@ export default function SignUp() {
             <label className="block text-xs font-semibold text-zinc-400 uppercase tracking-widest mb-2 ml-1">
               Password
             </label>
-            <input 
-              onChange={(e)=>SetPassword(e.target.value)}
-              type="password" 
+            <input
+              onChange={(e) => SetPassword(e.target.value)}
+              type="password"
+              name='password'
               placeholder="••••••••"
               className="w-full bg-zinc-800/50 border border-zinc-700 text-white px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-white/20 focus:border-zinc-500 transition-all placeholder-zinc-600"
             />
@@ -67,9 +91,10 @@ export default function SignUp() {
             <label className="block text-xs font-semibold text-zinc-400 uppercase tracking-widest mb-2 ml-1">
               Confirm Password
             </label>
-            <input 
-              onChange={(e)=>SetConfirmPassword(e.target.value)}
-              type="password" 
+            <input
+              onChange={(e) => SetConfirmPassword(e.target.value)}
+              type="password"
+              name='confirm_password'
               placeholder="••••••••"
               className="w-full bg-zinc-800/50 border border-zinc-700 text-white px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-white/20 focus:border-zinc-500 transition-all placeholder-zinc-600"
             />
@@ -85,7 +110,7 @@ export default function SignUp() {
         <div className="mt-8 text-center text-sm">
           <span className="text-zinc-500">Already have an account? </span>
           <button className="text-white font-medium hover:underline"
-          onClick={()=>router.push('/auth/signin')}
+            onClick={() => router.push('/auth/signin')}
           >Log in</button>
         </div>
       </div>

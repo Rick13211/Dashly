@@ -15,5 +15,5 @@ const UserSchema = new Schema<user>({
   avatar:{type:String,required:false},
 },{timestamps:true})
 
-const User = models.user || model('User', UserSchema)
+const User = models.User || model('User', UserSchema)
 export default User
