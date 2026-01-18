@@ -29,7 +29,11 @@ export const authOptions: NextAuthOptions = {
             if (!isPasswordValid) {
               throw new Error("Invalid password")
             }
-            return user
+            return {
+              id:user._id.toString(),
+              name:user.name,
+              email:user.email,
+            } 
           }
           catch (error) {
             console.log(error)
@@ -40,15 +44,21 @@ export const authOptions: NextAuthOptions = {
     )
   ],
   callbacks: {
-    async jwt({ token, account }) {
+    async jwt({ token, account, user }) {
       // Persist the OAuth access_token to the token right after signin
       if (account) {
         token.accessToken = account.access_token
+      }
+      if (user) {
+        token.id = user.id
       }
       return token
     },
     async session({ session, token, user }) {
       // Send properties to the client, like an access_token from a provider.
+      if (session.user) {
+        session.user.id = token.id as string
+      }
       session.accessToken = token.accessToken
       return session
     }
