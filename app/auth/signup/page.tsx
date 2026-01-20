@@ -2,6 +2,7 @@
 import { useRouter } from 'next/navigation';
 import React, { FormEvent, useState } from 'react';
 
+import { signIn } from 'next-auth/react';
 export default function SignUp() {
   const [username, SetUsername] = useState('')
   const [email, SetEmail] = useState('')
@@ -9,28 +10,36 @@ export default function SignUp() {
   const [confirmPassword, SetConfirmPassword] = useState('')
   async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    const response = await fetch("/api/auth/signup", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        username,
-        email,
-        password,
-        confirm_password: confirmPassword
-      })
-    })
-    if (!response.ok) {
-      const errorData = await response.json();
-      console.log(errorData.message)
-      throw new Error(errorData.error || "Failed to register")
+    try {
+      const response = await fetch("/api/auth/signup", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          username,
+          email,
+          password,
+          confirm_password: confirmPassword
+        })
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        // Use alert or a state-based toast here instead of throwing
+        alert(errorData.error || "Failed to register");
+        return;
+      }
+
+      // Automatically log in after successful signup
+      const result = await signIn("credentials", {
+        email: email,      // Use the 'email' state variable
+        password: password, // Use the 'password' state variable
+        callbackUrl: "/dashboard",
+        redirect: true,
+      });
+
+    } catch (err) {
+      console.error("Signup flow error:", err);
     }
-    const data = await response.json()
-    console.log(data)
-    router.push('/dashboard')
-
-
   }
   const router = useRouter();
   return (

@@ -1,26 +1,24 @@
-// REMOVE "use client" - This makes it a Server Component
-import Link from 'next/link';
-import { Clock, ArrowUpRight } from 'lucide-react';
-import getNotes from '@/utlis/getNotes';
-import FavoriteButton from '@/components/FavoriteButton';
+import getUser from "@/utlis/getUser";
+import Favorites from "@/models/Favorites";
+import Note from "@/models/notes";
+import Link from "next/link";
+import FavoriteButton from "@/components/FavoriteButton";
+import { ArrowUpRight, Clock } from "lucide-react";
 
-
-export default async function DashboardPage() {
-  // This runs ONLY on the server, so Mongoose will work perfectly here.
-  const notes = await getNotes();
+export default async function FavoritesPage() {
+  const user = await getUser()
+  if (!user) return
+  const favorites = await Favorites.find({
+    userId: user.id
+  })
+  const notes = await Note.find({
+    _id: {
+      $in: favorites.map((favorite) => favorite.noteId)
+    }
+  })
 
   return (
-    <div className="p-2 md:p-6 max-w-7xl mx-auto">
-      <header className="mb-12 flex items-baseline justify-between">
-        <div>
-          <h2 className="text-4xl font-black text-white tracking-tighter italic">Your Space</h2>
-          <p className="text-zinc-500 text-sm mt-1">Manage your thoughts and ideas.</p>
-        </div>
-        <span className="text-zinc-700 text-[10px] font-bold uppercase tracking-[0.2em]">
-          {notes?.length || 0} total notes
-        </span>
-      </header>
-
+    <>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {notes.map((note: any, index: number) => (
           <Link
@@ -71,6 +69,6 @@ export default async function DashboardPage() {
           </Link>
         ))}
       </div>
-    </div>
-  );
+    </>
+  )
 }

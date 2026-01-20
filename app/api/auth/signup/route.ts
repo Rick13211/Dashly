@@ -2,8 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import connectToDB from "@/utlis/DB";
 import User from "@/models/user";
 import bcrypt from "bcryptjs";
+import { signIn } from "next-auth/react";
 
-console.log("Signup Route reached");
 
 export async function POST(request: NextRequest) {
   try {
