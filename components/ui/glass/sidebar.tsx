@@ -6,11 +6,11 @@ import {
   SidebarContent,
   SidebarFooter,
   SidebarHeader,
-  SidebarItem,
 } from "@/components/ui/sidebar"
 import { cn } from "@/lib/utils"
 
-export interface SidebarProps extends React.ComponentProps<typeof BaseSidebar> {
+export interface SidebarProps extends Omit<React.ComponentProps<typeof BaseSidebar>, "variant"> {
+  variant?: React.ComponentProps<typeof BaseSidebar>["variant"] | "glass"
   glow?: boolean
 }
 
@@ -22,7 +22,7 @@ export const Sidebar = React.forwardRef<HTMLDivElement, SidebarProps>(
     return (
       <BaseSidebar
         ref={ref}
-        variant={variant}
+        variant={variant === "glass" ? "sidebar" : variant}
         className={cn(
           glow && "shadow-lg shadow-purple-500/20",
           className
@@ -38,6 +38,6 @@ export {
   SidebarHeader,
   SidebarContent,
   SidebarFooter,
-  SidebarItem,
+  
 }
 
