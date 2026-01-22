@@ -24,3 +24,35 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Failed to create note" }, { status: 500 });
   }
 }
+
+
+export async function PUT(req: Request) {
+  try {
+    const session = await getServerSession(authOptions);
+    if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+    await connectToDB();
+
+    // ✅ FIXED: Only call req.json() ONCE
+    const body = await req.json();
+    const { id, title, content } = body; 
+
+    // Security check: Ensure id was actually sent
+    if (!id) {
+        return NextResponse.json({ error: "Note ID is required" }, { status: 400 });
+    }
+
+    const result = await Notes.findOneAndUpdate(
+      { _id: id, user: session.user.id },
+      { title, content },
+      { new: true }
+    );
+
+    if (!result) return NextResponse.json({ error: "Note not found" }, { status: 404 });
+    
+    return NextResponse.json(result, { status: 200 });
+  } catch (error) {
+    console.error("Database Error:", error);
+    return NextResponse.json({ error: "Failed to update note" }, { status: 500 });
+  }
+}

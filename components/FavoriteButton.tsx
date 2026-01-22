@@ -5,9 +5,10 @@ import { toggleFavorite } from '@/app/dashboard/actions';
 
 interface FavoriteButtonProps {
   noteId: string;
+  isFavorite:boolean;
 }
 
-export default function FavoriteButton({ noteId }: FavoriteButtonProps) {
+export default function FavoriteButton({ noteId, isFavorite }: FavoriteButtonProps) {
   return (
     <div
       onClick={async (e) => {
@@ -17,7 +18,7 @@ export default function FavoriteButton({ noteId }: FavoriteButtonProps) {
       }}
       className="cursor-pointer hover:text-yellow-400 transition-colors"
     >
-      <Star size={14} />
+      <Star stroke={isFavorite?'gold':'grey'} size={14} />
     </div>
   );
 }

@@ -21,9 +21,8 @@ export default async function FavoritesPage() {
     <>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {notes.map((note: any, index: number) => (
-          <Link
+          <div
             key={note._id.toString()}
-            href={`/dashboard/note/${note._id}`}
             className="group block h-full focus:outline-none focus:ring-2 focus:ring-white/10 rounded-[2.5rem]"
           >
             <div className="relative h-72 p-8 bg-zinc-900/10 border border-white/5 rounded-[2.5rem] backdrop-blur-md transition-all duration-500 ease-[cubic-bezier(0.23,1,0.32,1)] hover:border-white/20 hover:bg-white/[0.04] hover:shadow-[0_30px_60px_rgba(0,0,0,0.5)] flex flex-col justify-between overflow-hidden">
@@ -38,8 +37,9 @@ export default async function FavoritesPage() {
                     </span>
                   </div>
                   <div className="p-2 rounded-full bg-white/5 text-zinc-600 group-hover:text-white group-hover:bg-white/10 transition-all duration-300 transform group-hover:translate-x-1 group-hover:-translate-y-1 flex items-center gap-1">
-                    <FavoriteButton noteId={note._id.toString()} />
-                    <ArrowUpRight size={14} />
+                    <FavoriteButton noteId={note._id.toString()} isFavorite={true} />
+                    <Link href={`/dashboard/note/${note._id}`}><ArrowUpRight size={14} /></Link>
+
                   </div>
                 </div>
 
@@ -66,7 +66,7 @@ export default async function FavoritesPage() {
                 {(index + 1).toString().padStart(2, '0')}
               </div>
             </div>
-          </Link>
+          </div>
         ))}
       </div>
     </>

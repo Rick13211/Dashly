@@ -3,11 +3,15 @@ import Link from 'next/link';
 import { Clock, ArrowUpRight } from 'lucide-react';
 import getNotes from '@/utlis/getNotes';
 import FavoriteButton from '@/components/FavoriteButton';
+import connectToDB from '@/utlis/DB';
+import DeleteButton from '@/components/deleteButton';
+import EditButton from '@/components/EditButton';
 
 
 export default async function DashboardPage() {
   // This runs ONLY on the server, so Mongoose will work perfectly here.
   const notes = await getNotes();
+
 
   return (
     <div className="p-2 md:p-6 max-w-7xl mx-auto">
@@ -22,7 +26,8 @@ export default async function DashboardPage() {
       </header>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {notes.map((note: any, index: number) => (
+        {notes.map(async (note: any, index: number) => (
+
           <Link
             key={note._id.toString()}
             href={`/dashboard/note/${note._id}`}
@@ -39,8 +44,10 @@ export default async function DashboardPage() {
                       Personal
                     </span>
                   </div>
-                  <div className="p-2 rounded-full bg-white/5 text-zinc-600 group-hover:text-white group-hover:bg-white/10 transition-all duration-300 transform group-hover:translate-x-1 group-hover:-translate-y-1 flex items-center gap-1">
-                    <FavoriteButton noteId={note._id.toString()} />
+                  <div className="p-2 rounded-full bg-white/5 text-zinc-600 group-hover:text-white group-hover:bg-white/10 transition-all duration-300 transform group-hover:translate-x-1 group-hover:-translate-y-1 flex items-center gap-3">
+                    <EditButton noteId={note._id.toString()} />
+                    <DeleteButton  noteId={note._id.toString()} />
+                    <FavoriteButton noteId={note._id.toString()} isFavorite={note.isFavorite} />
                     <ArrowUpRight size={14} />
                   </div>
                 </div>

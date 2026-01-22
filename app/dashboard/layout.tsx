@@ -4,17 +4,18 @@ import { useSession } from "next-auth/react";
 import { ReactNode } from 'react';
 import { Plus, FileText, Star, LogOut } from 'lucide-react';
 import Image from 'next/image';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 
 export default function DashboardLayout({ children }: { children: ReactNode }) {
   const { data: session } = useSession();
   const router = useRouter();
+  const pathname = usePathname();
 
   return (
     <div className="flex h-screen bg-[#050505] text-white selection:bg-white/10">
       {/* Refined Sidebar */}
       <aside className="w-72 border-r border-white/5 bg-black/40 backdrop-blur-2xl p-8 flex flex-col relative z-20">
-        
+
         {/* Logo Section */}
         <div className="mb-12">
           <h1 className="text-3xl font-black italic tracking-tighter text-white">DashLy</h1>
@@ -42,11 +43,26 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
 
         {/* Nav Links */}
         <nav className="space-y-2 flex-1">
-          <button className="flex items-center space-x-3 text-white w-full px-4 py-3 bg-white/5 rounded-2xl border border-white/5 font-medium text-sm">
-            <FileText size={18} className="text-zinc-400" /> <span>All Notes</span>
+          <button
+            onClick={() => router.push('/dashboard')}
+            className={`flex items-center space-x-3 w-full px-4 py-3 rounded-2xl transition-all font-medium text-sm ${pathname === '/dashboard'
+                ? 'text-white bg-white/5 border border-white/5'
+                : 'text-zinc-500 hover:text-white hover:bg-white/5 border border-transparent'
+              }`}
+          >
+            <FileText size={18} className={pathname === '/dashboard' ? "text-zinc-400" : ""} />
+            <span>All Notes</span>
           </button>
-          <button className="flex items-center space-x-3 text-zinc-500 hover:text-white hover:bg-white/5 w-full px-4 py-3 rounded-2xl transition-all font-medium text-sm">
-            <Star size={18} onClick={() => router.push('/dashboard/favorites')} /> <span>Favorites</span>
+
+          <button
+            onClick={() => router.push('/dashboard/favorites')}
+            className={`flex items-center space-x-3 w-full px-4 py-3 rounded-2xl transition-all font-medium text-sm ${pathname === '/dashboard/favorites'
+                ? 'text-white bg-white/5 border border-white/5'
+                : 'text-zinc-500 hover:text-white hover:bg-white/5 border border-transparent'
+              }`}
+          >
+            <Star size={18} />
+            <span>Favorites</span>
           </button>
         </nav>
 
