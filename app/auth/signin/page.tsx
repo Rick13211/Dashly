@@ -1,10 +1,16 @@
 "use client"
 import { useRouter } from "next/navigation";
-import { FormEvent, useState } from "react";
-import { signIn } from "next-auth/react";
+import { FormEvent, useEffect, useState } from "react";
+import { signIn, useSession } from "next-auth/react";
 
 export default function SignIn() {
   const router = useRouter();
+  const session = useSession()
+  useEffect(() => {
+    if (session.status === 'authenticated') {
+      router.push('/dashboard');
+    }
+  }, [session, router]);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -51,10 +57,10 @@ export default function SignIn() {
             <label className="block text-[10px] font-bold text-zinc-500 uppercase tracking-[0.2em] mb-2 ml-1">
               Email Address
             </label>
-            <input 
+            <input
               required
               onChange={(e) => setEmail(e.target.value)}
-              type="email" 
+              type="email"
               placeholder="name@email.com"
               className="w-full bg-black/40 border border-zinc-800 text-white px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-white/10 focus:border-zinc-600 transition-all placeholder-zinc-700"
             />
@@ -64,18 +70,18 @@ export default function SignIn() {
             <label className="block text-[10px] font-bold text-zinc-500 uppercase tracking-[0.2em] mb-2 ml-1">
               Password
             </label>
-            <input 
+            <input
               required
               onChange={(e) => setPassword(e.target.value)}
-              type="password" 
+              type="password"
               placeholder="••••••••"
               className="w-full bg-black/40 border border-zinc-800 text-white px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-white/10 focus:border-zinc-600 transition-all placeholder-zinc-700"
             />
           </div>
 
-          <button 
+          <button
             disabled={loading}
-            type="submit" 
+            type="submit"
             className="w-full bg-white text-black font-bold py-4 rounded-xl mt-4 hover:bg-zinc-200 transition-all active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {loading ? "Authenticating..." : "Sign In"}
@@ -84,7 +90,7 @@ export default function SignIn() {
 
         <div className="mt-8 text-center text-sm">
           <span className="text-zinc-600">New to DashLy? </span>
-          <button 
+          <button
             className="text-white font-medium hover:underline transition-all"
             onClick={() => router.push('/auth/signup')}
           >

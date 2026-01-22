@@ -9,19 +9,19 @@ export const authOptions: NextAuthOptions = {
     CredentialsProvider({
       name: "Credentials",
       credentials: {
-        email: { label: "Email", type: "email" },
+        username: { label: "Username", type: "text" },
         password: { label: "Password", type: "password" }
       },
       async authorize(credentials) {
-        if (!credentials?.email || !credentials?.password) {
-          throw new Error("Missing email or password");
+        if (!credentials?.username || !credentials?.password) {
+          throw new Error("Missing username or password");
         }
-        
+
         await connectToDB();
-        const user = await User.findOne({ email: credentials.email });
+        const user = await User.findOne({ username: credentials?.username });
 
         if (!user) {
-          throw new Error("No user found with this email");
+          throw new Error("No user found with this username");
         }
 
         const isPasswordValid = await bcrypt.compare(credentials.password, user.password);
@@ -31,8 +31,8 @@ export const authOptions: NextAuthOptions = {
 
         return {
           id: user._id.toString(),
-          name: user.name,
-          email: user.email,
+          name: user.username,
+          username: user.username,
         };
       }
     })

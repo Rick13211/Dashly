@@ -37,7 +37,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
             {session?.user?.name || "Member"}
           </h2>
           <p className="text-zinc-600 text-[10px] uppercase tracking-widest truncate w-full px-2">
-            {session?.user?.email}
+            {session?.user?.username}
           </p>
         </div>
 

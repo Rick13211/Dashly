@@ -1,13 +1,25 @@
 'use client'
-import { useRouter } from 'next/navigation';
 import React, { FormEvent, useState } from 'react';
 
-import { signIn } from 'next-auth/react';
+import { signIn, useSession } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
 export default function SignUp() {
+  const router = useRouter()
   const [username, SetUsername] = useState('')
-  const [email, SetEmail] = useState('')
   const [password, SetPassword] = useState('')
   const [confirmPassword, SetConfirmPassword] = useState('')
+  /* 
+    getSession() returns a Promise, which is always truthy. 
+    Using useSession hook is the correct way to check auth state in a client component.
+  */
+  const { status, data: session } = useSession();
+
+
+  React.useEffect(() => {
+    if (status === 'authenticated') {
+      router.push('/dashboard')
+    }
+  }, [status, session]);
   async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     try {
@@ -16,7 +28,6 @@ export default function SignUp() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           username,
-          email,
           password,
           confirm_password: confirmPassword
         })
@@ -31,7 +42,7 @@ export default function SignUp() {
 
       // Automatically log in after successful signup
       const result = await signIn("credentials", {
-        email: email,      // Use the 'email' state variable
+        username: username,      // Use the 'email' state variable
         password: password, // Use the 'password' state variable
         callbackUrl: "/dashboard",
         redirect: true,
@@ -41,7 +52,6 @@ export default function SignUp() {
       console.error("Signup flow error:", err);
     }
   }
-  const router = useRouter();
   return (
     <div className="min-h-screen bg-black flex items-center justify-center px-4">
       {/* Glow Effect Background (Optional for depth) */}
@@ -65,19 +75,6 @@ export default function SignUp() {
               type="text"
               name='username'
               placeholder="johndoe"
-              className="w-full bg-zinc-800/50 border border-zinc-700 text-white px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-white/20 focus:border-zinc-500 transition-all placeholder-zinc-600"
-            />
-          </div>
-          {/*Email Field*/}
-          <div>
-            <label className="block text-xs font-semibold text-zinc-400 uppercase tracking-widest mb-2 ml-1">
-              Email
-            </label>
-            <input
-              onChange={(e) => SetEmail(e.target.value)}
-              type="email"
-              name='email'
-              placeholder="johndoe@email.com"
               className="w-full bg-zinc-800/50 border border-zinc-700 text-white px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-white/20 focus:border-zinc-500 transition-all placeholder-zinc-600"
             />
           </div>

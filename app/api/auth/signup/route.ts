@@ -7,10 +7,10 @@ import { signIn } from "next-auth/react";
 
 export async function POST(request: NextRequest) {
   try {
-    const { username, email, password, confirm_password } =
+    const { username, password, confirm_password } =
       await request.json();
 
-    if (!username || !email || !password || !confirm_password) {
+    if (!username || !password || !confirm_password) {
       return NextResponse.json(
         { error: "All fields are required" },
         { status: 400 }
@@ -28,10 +28,10 @@ export async function POST(request: NextRequest) {
 
     await connectToDB();
 
-    const existingUser = await User.findOne({ email });
+    const existingUser = await User.findOne({ username: username.toLowerCase().trim() });
     if (existingUser) {
       return NextResponse.json(
-        { error: "Email already exists!" },
+        { error: "Username already exists!" },
         { status: 400 }
       );
     }
@@ -39,8 +39,7 @@ export async function POST(request: NextRequest) {
     const hashedPassword = await bcrypt.hash(password, 10);
 
     await User.create({
-      name: username,   // ✅ FIXED
-      email,
+      username: username.toLowerCase().trim(),
       password: hashedPassword,
       avatar: "",
     });
