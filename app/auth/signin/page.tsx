@@ -61,7 +61,7 @@ export default function SignIn() {
               required
               onChange={(e) => setUsername(e.target.value)}
               type="text"
-              placeholder="name@email.com"
+              placeholder="John Doe"
               className="w-full bg-black/40 border border-zinc-800 text-white px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-white/10 focus:border-zinc-600 transition-all placeholder-zinc-700"
             />
           </div>
