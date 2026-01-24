@@ -11,7 +11,7 @@ export default function SignIn() {
       router.push('/dashboard');
     }
   }, [session, router]);
-  const [email, setEmail] = useState('');
+  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -22,13 +22,13 @@ export default function SignIn() {
     setError('');
 
     const result = await signIn("credentials", {
-      email,
+      username,
       password,
       redirect: false
     });
 
     if (result?.error) {
-      setError("Invalid email or password");
+      setError("Invalid username or password");
       setLoading(false);
     } else {
       router.push('/dashboard');
@@ -55,12 +55,12 @@ export default function SignIn() {
 
           <div>
             <label className="block text-[10px] font-bold text-zinc-500 uppercase tracking-[0.2em] mb-2 ml-1">
-              Email Address
+              Username
             </label>
             <input
               required
-              onChange={(e) => setEmail(e.target.value)}
-              type="email"
+              onChange={(e) => setUsername(e.target.value)}
+              type="text"
               placeholder="name@email.com"
               className="w-full bg-black/40 border border-zinc-800 text-white px-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-white/10 focus:border-zinc-600 transition-all placeholder-zinc-700"
             />
