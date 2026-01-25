@@ -6,6 +6,8 @@ import FavoriteButton from '@/components/FavoriteButton';
 import connectToDB from '@/utlis/DB';
 import DeleteButton from '@/components/deleteButton';
 import EditButton from '@/components/EditButton';
+import SignOut from '@/components/SignOut';
+
 
 
 export default async function DashboardPage() {
@@ -20,9 +22,13 @@ export default async function DashboardPage() {
           <h2 className="text-4xl font-black text-white tracking-tighter italic">Your Space</h2>
           <p className="text-zinc-500 text-sm mt-1">Manage your thoughts and ideas.</p>
         </div>
-        <span className="text-zinc-700 text-[10px] font-bold uppercase tracking-[0.2em]">
+        <div className="flex items-center space-x-2">
+          <SignOut/>
+          <span className="text-zinc-700 text-[10px] font-bold uppercase tracking-[0.2em]">
           {notes?.length || 0} total notes
         </span>
+        </div>
+        
       </header>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
