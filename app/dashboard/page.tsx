@@ -1,12 +1,14 @@
 // REMOVE "use client" - This makes it a Server Component
 import Link from 'next/link';
-import { Clock, ArrowUpRight } from 'lucide-react';
+import { Clock, ArrowUpRight, Share, MoreHorizontal } from 'lucide-react';
 import getNotes from '@/utlis/getNotes';
 import FavoriteButton from '@/components/FavoriteButton';
 import connectToDB from '@/utlis/DB';
 import DeleteButton from '@/components/deleteButton';
 import EditButton from '@/components/EditButton';
 import SignOut from '@/components/SignOut';
+import { handleShare } from '@/lib/utils';
+import ShareButton from '@/components/ShareButton';
 
 
 
@@ -50,11 +52,20 @@ export default async function DashboardPage() {
                       Personal
                     </span>
                   </div>
-                  <div className="p-2 rounded-full bg-white/5 text-zinc-600 group-hover:text-white group-hover:bg-white/10 transition-all duration-300 transform group-hover:translate-x-1 group-hover:-translate-y-1 flex items-center gap-3">
-                    <EditButton noteId={note._id.toString()} />
-                    <DeleteButton  noteId={note._id.toString()} />
-                    <FavoriteButton noteId={note._id.toString()} isFavorite={note.isFavorite} />
-                    <ArrowUpRight size={14} />
+                  <div className="relative group/menu flex items-center justify-end">
+                    <div className="p-2 rounded-full bg-white/5 text-zinc-400 group-hover/menu:opacity-0 transition-opacity duration-200 cursor-pointer">
+                      <MoreHorizontal size={18} />
+                    </div>
+                    <div className="absolute right-0 flex items-center gap-3 p-2 rounded-full bg-white/10 backdrop-blur-md border border-white/10 
+                                    opacity-0 invisible scale-95 origin-right 
+                                    group-hover/menu:opacity-100 group-hover/menu:visible group-hover/menu:scale-100 
+                                    transition-all duration-300 ease-out">
+                      
+                      <EditButton noteId={note._id.toString()} />
+                      <DeleteButton noteId={note._id.toString()} />
+                      <FavoriteButton noteId={note._id.toString()} isFavorite={note.isFavorite} />
+                      <ShareButton noteId={note._id.toString()}/>
+                    </div>
                   </div>
                 </div>
 
